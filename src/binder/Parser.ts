@@ -1,7 +1,7 @@
 import { InputableElement } from '../types';
 
 import type ViewModel from '../view-model';
-import { ViewModelSource } from '../view-model';
+import type { ViewModelSource } from '../view-model';
 
 import {
   MUSTACHE_REGEX,

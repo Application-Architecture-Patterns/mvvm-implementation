@@ -1,5 +1,4 @@
 import type ViewModel from '../view-model';
-import { ViewModelSource } from '../view-model';
 
 import Parser from './Parser';
 
@@ -22,7 +21,6 @@ export default class Binder {
   public bind(viewModel: ViewModel) {
     viewModel.subscribe(this);
     this.$parser.parse(viewModel);
-
   }
 
   public update(viewModel: ViewModel) {
