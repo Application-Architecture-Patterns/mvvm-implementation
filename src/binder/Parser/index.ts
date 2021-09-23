@@ -1,14 +1,11 @@
-import { InputableElement } from '../types';
+import { InputableElement } from '../../types';
 
-import type ViewModel from '../view-model';
-import type { ViewModelSource } from '../view-model';
+import type ViewModel from '../../view-model';
+import type { ViewModelSource } from '../../view-model';
 
-import {
-  MUSTACHE_REGEX,
-  MUSTACHE_INNER_VALUE_REGEX,
-  NODE_TYPE,
-  checkIsInputable
-} from '../utils';
+import { NODE_TYPE, checkIsInputable } from '../../utils';
+
+import MustacheParser, { MUSTACHE_REGEX } from './MustacheParser';
 
 interface ParseCommonParams {
   clonedEl: HTMLElement;
@@ -111,21 +108,29 @@ export default class Parser {
     } = params;
 
     const trimmedTextContent = clonedEl.textContent.trim();
-    let newTextContent = '';
 
     if (!trimmedTextContent) {
       return '';
     }
 
-    // @TODO: More exquisite parsing
-    newTextContent = trimmedTextContent.replace(MUSTACHE_REGEX, val => {
-      const [key] = val.match(MUSTACHE_INNER_VALUE_REGEX);
-      return data[key.trim()];
-    });
+    const hasMustacheSyntax = MUSTACHE_REGEX.test(trimmedTextContent);
 
-    const targetEl = renderedEl ?? clonedEl;
+    if (!hasMustacheSyntax) {
+      return;
+    }
 
-    targetEl.textContent = newTextContent;
+    try {
+      const parsedTextContent = MustacheParser.parse(
+        data,
+        trimmedTextContent
+      );
+
+      const targetEl = renderedEl ?? clonedEl;
+
+      targetEl.textContent = parsedTextContent;
+    } catch(e) {
+      return;
+    }
   }
 
   private parseAttributes(params: ParseAttributesParams) {

@@ -1,6 +1,6 @@
 import type ViewModel from '../view-model';
 
-import Parser from './Parser';
+import Parser from './Parser/';
 
 interface BinderSource {
   el: string;
